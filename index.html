@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <title>YouTube 播放器</title>
   <!-- favicon 標籤頁logo -->
-  <link rel="icon" href="../VELVET_favicon.ico" type="image/svg+xml">
+  <link rel="icon" href="../favicon.ico" type="image/svg+xml">
   
   <style>
     body {
@@ -101,7 +101,10 @@
   <script src="https://www.youtube.com/iframe_api"></script>
   <script>
     const playlistId = "PLBCWta9qwiTFbZUMF51mfgrNWirfksMAY";
-    const apiKey = "AIzaSyCdZVwzVPkATuRDOMtEerrBHbOlNC_8B3c";
+
+    <!-- API金鑰 -->
+    const YT_PROXY = "https://feixu-proxy-gem.svcopcc.workers.dev/api/youtube";
+
     let videoIds = [], videoTitles = [], videoDurations = {}, current = 0;
     let player, popupWindow = null, fallbackInterval = null;
     let skipUnembedMode = true;
@@ -228,7 +231,7 @@
     async function fetchDurations(ids) {
       for (let i = 0; i < ids.length; i += 50) {
         const idChunk = ids.slice(i, i + 50).join(",");
-        const url = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${idChunk}&key=${apiKey}`;
+        const url = `${YT_PROXY}/videos?part=contentDetails&id=${idChunk}`;
         const res = await fetch(url);
         const data = await res.json();
         data.items.forEach(item => {
@@ -248,7 +251,7 @@
       if (forceReload) { videoIds = []; videoTitles = []; }
       let pageToken = "", safety = 0;
       while (safety++ < 100) {
-        let url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${playlistId}&key=${apiKey}`;
+        let url = `${YT_PROXY}/playlistItems?part=snippet&maxResults=50&playlistId=${playlistId}`;
         if (pageToken) url += `&pageToken=${pageToken}`;
         const res = await fetch(url);
         const data = await res.json();
