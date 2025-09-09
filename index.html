@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <title>YouTube 播放器V2</title>
   <!-- favicon 標籤頁logo -->
-  <link rel="icon" href="../favicon.ico" type="image/svg+xml">
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
   
   <style>
     body {
@@ -102,7 +102,7 @@
   <script>
     const playlistId = "PLBCWta9qwiTFbZUMF51mfgrNWirfksMAY";
 
-    <!-- API金鑰 -->
+    // API金鑰 
     const YT_PROXY = "https://feixu-proxy-gem.svcopcc.workers.dev/api/youtube";
 
     let videoIds = [], videoTitles = [], videoDurations = {}, current = 0;
@@ -204,12 +204,18 @@
     }
 
     function playCurrent() {
-      clearInterval(fallbackInterval);
-      document.getElementById("fallback").style.display = "none";
-      const videoId = videoIds[current];
-      player.loadVideoById(videoId);
-      updatePlaylistDisplay();
-    }
+       clearInterval(fallbackInterval);
+       document.getElementById("fallback").style.display = "none";
+       const videoId = videoIds[current];
+
+     // 防呆：若 player 尚未建立，不要強行呼叫，先只更新清單
+      if (!player || typeof player.loadVideoById !== "function") {
+        updatePlaylistDisplay();
+        return;
+      }
+       player.loadVideoById(videoId);
+       updatePlaylistDisplay();
+     }
 
     function playNext() {
   if (popupWindow && !popupWindow.closed) popupWindow.close();
